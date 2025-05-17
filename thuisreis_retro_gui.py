@@ -8,7 +8,7 @@ import calendar
 import math
 from utils import get_affirmations, emotionele_thema_suggesties
 import pylunar 
-import datetime
+
 
 
 BESTAND = "thuireis_journal.txt"
@@ -317,68 +317,9 @@ maan_tekst = tk.StringVar()
 ttk.Label(maanpagina, textvariable=maan_tekst, style="Custom.TLabel", justify="center", wraplength=500).pack(pady=10)
 
 # Bereken actuele maanstand
-def bereken_maanfase_en_teken():
-    # Gebaseerd op algoritme van John Walker / simplified lunation
-    now = datetime.utcnow()
-    year, month = now.year, now.month
-    day = now.day + now.hour / 24 + now.minute / 1440
-
-    if month < 3:
-        year -= 1
-        month += 12
-
-    a = int(year / 100)
-    b = 2 - a + int(a / 4)
-    c = int(365.25 * year)
-    d = int(30.6001 * (month + 1))
-    days_since_new = c + d + day + b - 694039.09
-    lunation = days_since_new % 29.53058867
-
-    # ➕ Nieuw: bepaal of de maan aan het wassen of afnemen is
-    if lunation < 14.765:  # voor volle maan
-        richting = "wassende"
-    else:
-        richting = "afnemende"
-
-    fase = (lunation / 29.53058867) * 100
-
-    if fase < 1 or fase > 99:
-        fase_naam = "🌑 Nieuwe maan"
-    elif fase < 25:
-        fase_naam = f"🌒 {richting} sikkel"
-    elif fase < 50:
-        fase_naam = f"🌓 Eerste kwartier" if richting == "wassende" else "🌗 Laatste kwartier"
-    elif fase < 75:
-        fase_naam = f"🌔 {richting} maan"
-    else:
-        fase_naam = "🌕 Volle maan"
-
-    # Geschatte positie (zelfde benadering als eerder)
-    positie_graden = (lunation * 360 / 29.53058867) % 360
-    tekens = [
-        "♈ Ram", "♉ Stier", "♊ Tweelingen", "♋ Kreeft",
-        "♌ Leeuw", "♍ Maagd", "♎ Weegschaal", "♏ Schorpioen",
-        "♐ Boogschutter", "♑ Steenbok", "♒ Waterman", "♓ Vissen"
-    ]
-    teken_index = int(positie_graden // 30)
-    teken = tekens[teken_index]
-    graden_in_teken = int(positie_graden % 30)
-
-    return fase_naam, f"{graden_in_teken}° {teken}"
-# phase name, coordinate in zodiac, sign
-
-#Location: 
-#mi = pylunar.MoonInfo()
 
 
-def toon_maanstand():
-    fase, positie = bereken_maanfase_en_teken()
-    maan_tekst.set(f"{fase}\nMaan staat op {positie}")
 
-ttk.Button(maanpagina, text="🔄 Vernieuw", command=toon_maanstand).pack(pady=5)
-ttk.Button(maanpagina, text="🏠 Terug naar menu", command=lambda: show_page("Start")).pack(pady=10)
-
-toon_maanstand()
 
 # PAGE: Suggesties
 suggestiepagina = pages["Suggesties"]
@@ -390,4 +331,5 @@ tk.Button(suggestiepagina, text="🏠 Terug naar menu", command=lambda: show_pag
 # START: eerste scherm
 show_page("Start")
 root.mainloop()
+
 

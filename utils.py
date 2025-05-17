@@ -3,7 +3,8 @@ def get_affirmations(filename):
     affirmaties = []
     file = open(filename, "r")
     for line in file:
-        affirmaties.append(line)
+        clean_line = line.strip()
+        affirmaties.append(clean_line)
     return affirmaties
 
 emotionele_thema_suggesties = {
@@ -81,19 +82,3 @@ emotionele_thema_suggesties = {
     }
 }
 
-
-
-def convert_days_to_dhm(days_float):
-    # Get the integer part as full days
-    days = int(days_float)
-
-    # Get the fractional part and convert to hours
-    fractional_day = days_float - days
-    total_hours = fractional_day * 24
-    hours = int(total_hours)
-
-    # Get the remaining fraction and convert to minutes
-    fractional_hour = total_hours - hours
-    minutes = int(fractional_hour * 60)
-
-    return days, hours, minutes
