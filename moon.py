@@ -30,28 +30,29 @@ def convert_days_to_dhm(days_float):
     return days, hours, minutes
 
 
-# Step 1: Get current location
-location = geocoder.ip('me')
-latitude, longitude = location.latlng
+def get_moon_info():
+    # Step 1: Get current location
+    location = geocoder.ip('me')
+    latitude, longitude = location.latlng
 
-# Step 2: Convert to DMS
-lat_dms = decimal_to_dms(latitude)
-lon_dms = decimal_to_dms(longitude)
+    # Step 2: Convert to DMS
+    lat_dms = decimal_to_dms(latitude)
+    lon_dms = decimal_to_dms(longitude)
 
-# Step 3: Set up the observer with pylunar
-moon_info = pylunar.MoonInfo(lat_dms, lon_dms)
-moon_info.update(datetime.utcnow())
+    # Step 3: Set up the observer with pylunar
+    moon_info = pylunar.MoonInfo(lat_dms, lon_dms)
+    moon_info.update(datetime.utcnow())
 
-# Step 4: Get the current moon phase
-phase_name = moon_info.phase_name()
-phase_percentage = moon_info.fractional_phase()
-moon_emoji = moon_info.phase_emoji()
-print(phase_name, moon_emoji, phase_percentage)
-print(moon_info.time_to_full_moon())
-d, h, m = convert_days_to_dhm(moon_info.time_to_full_moon())
-print(f"Time until next full moon: {d} days, {h} hours, {m} minutes")
+    # Step 4: Get the current moon phase
+    phase_name = moon_info.phase_name()
+    phase_percentage = moon_info.fractional_phase()
+    moon_emoji = moon_info.phase_emoji()
+    #print(phase_name, moon_emoji, phase_percentage)
+    #print(moon_info.time_to_full_moon())
+    d, h, m = convert_days_to_dhm(moon_info.time_to_full_moon())
+    #print(f"Time until next full moon: {d} days, {h} hours, {m} minutes")
 
-
-print(f"Current Moon Phase: {phase_name}")
+    #print(f"Current Moon Phase: {phase_name}")
+    return phase_name, moon_emoji, phase_percentage, d, h, m
 
 
