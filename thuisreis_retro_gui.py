@@ -8,6 +8,7 @@ import calendar
 import math
 from utils import get_affirmations, emotionele_thema_suggesties
 import pylunar 
+import geocoder
 
 
 
@@ -64,7 +65,12 @@ style.configure("TButton", font=("Helvetica Neue", 12), padding=6)
 style.configure("Custom.TFrame", font=(" Helvetica Neue", 12))
 style.configure("Custom.TLabel", expand=True)
 style.configure("Custom.TLabelframe", expand=True)
+style.configure("Centered.Tlabelframe.Label", anchor="center", expand=True)
 style.configure("Custom.TLabelframe.Label", expand=True)
+style.configure("Custom.TCombobox",
+    fieldbackground="#eae7dc",
+    background="#eae7dc",
+    foreground="#333333")
 
 # NOTE: maak container voor paginawisseling
 container = ttk.Frame(root, padding=30, style="Custom.TFrame")
@@ -114,9 +120,9 @@ ttk.Button(button_frame, text="Bekijk geschiedenis", **knop_stijl, command=lambd
 ttk.Button(button_frame, text="Kalender bekijken", **knop_stijl, command=lambda: [update_kalender(), show_page("Kalender")]).pack(pady=5)
 ttk.Button(
     button_frame,
-    text="Stand van de Maan",
+    text="Stand van de maan",
     **knop_stijl,
-    command=lambda: show_page("MaanstandVandaag")
+    command=lambda: [toon_maaninfo(), show_page("MaanstandVandaag")]
 ).pack(pady=5)
 ttk.Button(
     button_frame,
@@ -126,8 +132,17 @@ ttk.Button(
 ).pack(pady=(30, 6))
 
 affirmatie = random.choice(affirmaties)
-affirmatie_frame = ttk.LabelFrame(home, text="✨ Dagelijkse affirmatie ✨", style="Custom.TLabelframe", padding=20)  # VISUEEL KADER
+affirmatie_frame = ttk.LabelFrame(home, style="Custom.TLabelframe", padding=20)  # VISUEEL KADER
 affirmatie_frame.pack(pady=60, padx=45, anchor="center", fill="x")
+
+ttk.Label(
+    affirmatie_frame,
+    text="✨ Dagelijkse affirmatie ✨",
+    font=("Helvetica Neue", 13, "bold"),
+    style="Custom.TLabel",
+    anchor="center",
+    justify="center"
+).pack(pady=(0, 10))
 
 ttk.Label(
     affirmatie_frame,
@@ -161,22 +176,22 @@ notitie = pages["Notitie"]
 
 ttk.Label(notitie, text="\n\n\nHoe voel je je vandaag?", style="Custom.TLabel").pack(pady=10)
 stemming_keuze = tk.StringVar()
-stemming_menu = ttk.Combobox(notitie, textvariable=stemming_keuze, values=moods, state="readononly")
+stemming_menu = ttk.Combobox(notitie, textvariable=stemming_keuze, values=moods, state="readononly", style="Custom.TCombobox")
 stemming_menu.set(moods[0])
 stemming_menu.pack()
 
 ttk.Label(notitie, text="Wat heb je vandaag nodig?", style="Custom.TLabel").pack(pady=10)
 behoefte_keuze = tk.StringVar()
-behoefte_keuze.set(behoefte_opties[0])
-behoefte_menu = ttk.Combobox(notitie, textvariable=behoefte_keuze, values=behoefte_opties, state="readonly")
+behoefte_menu = ttk.Combobox(notitie, textvariable=behoefte_keuze, values=behoefte_opties, state="readonly", style="Custom.TCombobox")
+behoefte_menu.set(behoefte_opties[0])
 behoefte_menu.pack()
 
 ttk.Label(notitie, text="Wat voelde als een ankerplek?", style="Custom.TLabel").pack(pady=10)
-ankerplek_entry = tk.Entry(notitie, width=50)
+ankerplek_entry = tk.Entry(notitie, width=50, bg="#eae7dc", fg="#333333", relief="flat")
 ankerplek_entry.pack()
 
 ttk.Label(notitie, text="Wat leeft er in je?", style="Custom.TLabel").pack(pady=10)
-gevoelstekst = tk.Text(notitie, height=15, width=70, wrap="word", font=("Georgia", 10))
+gevoelstekst = tk.Text(notitie, height=15, width=70, wrap="word", font=("Georgia", 10), bg="#eae7dc", fg="#333333", relief="flat")
 gevoelstekst.pack()
 
 def opslaan():
@@ -310,14 +325,67 @@ def toon_notitie_van_dag(dag):
     else:
         messagebox.showinfo("Geen notitie", f"Er is geen notitie gevonden voor {dag_str}.")
 
+
+# Maaninfo berekenen
+def decimal_to_dms(degree):
+    is_positive = degree >= 0
+    degree = abs(degree)
+    d = int(degree)
+    m = int((degree - d) * 60)
+    s = (degree - d - m / 60) * 3600
+    if not is_positive:
+        d = -d
+    return (int(d), int(m), int(s))
+
+def convert_days_to_dhm(days_float):
+    days = int(days_float)
+    fractional_day = days_float - days
+    total_hours = fractional_day * 24
+    hours = int(total_hours)
+    fractional_hour = total_hours - hours
+    minutes = int(fractional_hour * 60)
+    return days, hours, minutes
+
+def get_moon_info():
+    location = geocoder.ip('me')
+    latitude, longitude = location.latlng
+    lat_dms = decimal_to_dms(latitude)
+    lon_dms = decimal_to_dms(longitude)
+    moon_info = pylunar.MoonInfo(lat_dms, lon_dms)
+    moon_info.update(datetime.utcnow())
+    phase_name = moon_info.phase_name()
+    phase_percentage = moon_info.fractional_phase()
+    moon_emoji = moon_info.phase_emoji()
+    d, h, m = convert_days_to_dhm(moon_info.time_to_full_moon())
+    return phase_name, moon_emoji, phase_percentage, d, h, m
+
 # GUI maanstand
-maanpagina = pages["MaanstandVandaag"]
-ttk.Label(maanpagina, text="Stand van de Maan vandaag", style="Custom.TLabel", font=("Helvetica Neue", 14)).pack(pady=10)
-maan_tekst = tk.StringVar()
-ttk.Label(maanpagina, textvariable=maan_tekst, style="Custom.TLabel", justify="center", wraplength=500).pack(pady=10)
+maaninfo = pages["MaanstandVandaag"]
 
-# Bereken actuele maanstand
+maaninfo_label = ttk.Label(maaninfo, text="Actuele maanstand", font=("Helvetica Neue", 16), style="Custom.TLabel")
+maaninfo_label.pack(pady=20)
 
+maaninfo_tekst = tk.StringVar()
+maaninfo_resultaat = ttk.Label(maaninfo, textvariable=maaninfo_tekst, font=("Helvetica Neue", 13), justify="left", wraplength=500, style="Custom.TLabel")
+maaninfo_resultaat.pack(pady=40)
+
+def toon_maaninfo():
+    try:
+        fase, emoji, percentage, dagen, uren, minuten = get_moon_info()
+        fase_tmp = fase.split('_')
+        fase = " ".join(fase_tmp)
+
+        tekst = (
+            f"Fase: {emoji} {fase}\n"
+            f"Verlicht: {int(percentage * 100)}%\n"
+            f"Tijd tot volle maan: {dagen} dagen, {uren} uur, {minuten} minuten"
+        )
+        maaninfo_tekst.set(tekst)
+    except Exception as e:
+        maaninfo_tekst.set("Kon maaninfo niet ophalen. Probeer opnieuw.")
+        print(e)
+
+ttk.Button(maaninfo, text="🏠 Terug naar menu", command=lambda: show_page("Start")).pack(pady=40)
 
 
 
