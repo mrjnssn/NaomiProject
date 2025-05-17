@@ -5,62 +5,12 @@ import random
 import os
 import calendar
 import math
+from utils import get_affirmations, emotionele_thema_suggesties
 
 
 BESTAND = "thuireis_journal.txt"
 
-affirmaties = [
-    "Ik mag het langzaam aan doen vandaag.",
-    "Ik ben precies waar ik nu moet zijn.",
-    "Mijn gevoel mag er helemaal zijn.",
-    "Adem in rust, adem uit spanning.",
-    "Ik ben veilig in mijn lichaam.",
-    "Alles komt op het juiste moment.",
-    "Ik hoef niets te forceren.",
-    "Mijn huis is een verlengstuk van mijn innerlijke wereld.",
-    "Ik geef mezelf toestemming om te landen.",
-    "Ik ben in proces, en dat is genoeg.",
-    "Ik mag ruimte innemen.",
-    "Mijn adem brengt me altijd terug naar hier.",
-    "Ik vertrouw op het ritme van mijn leven.",
-    "Elke dag vind ik een beetje meer mijn plek.",
-    "Ik mag thuiskomen in mezelf.",
-    "Ik ben zacht voor mezelf, ook als het moeilijk is.",
-    "Ik mag loslaten wat niet meer past.",
-    "Ik creëer veiligheid van binnenuit.",
-    "Ik hoef het niet alleen te doen.",
-    "Ik ben verbonden, ook als ik me alleen voel.",
-    "Ik ben welkom in deze wereld, precies zoals ik ben.",
-    "Mijn energie is kostbaar en verdient zorg.",
-    "Ik geef mezelf liefde zonder voorwaarden.",
-    "Ik laat verwachtingen los en kies voor zachtheid.",
-    "Ik luister naar wat mijn lichaam nodig heeft.",
-    "Ik ben niet achter of te laat, ik beweeg op mijn tempo.",
-    "Elke ademhaling is een nieuw begin.",
-    "Ik mag rust nemen zonder me schuldig te voelen.",
-    "Thuis is iets dat ik in mij draag.",
-    "Mijn emoties zijn mijn kompas, geen bedreiging.",
-    "Ik ben krachtig in mijn kwetsbaarheid.",
-    "Mijn stilte heeft waarde.",
-    "Ik mag groeien, zelfs als dat langzaam gaat.",
-    "Ik ben goed genoeg, nu al.",
-    "Ik hoef niet alles te weten om verder te gaan.",
-    "Ik adem liefde in en spanning uit.",
-    "Ik creëer ruimte voor mijn verdriet én mijn vreugde.",
-    "Ik ben zacht én sterk tegelijk.",
-    "Vertrouwen groeit met elke stap die ik zet.",
-    "Ik draag mijn verleden met respect en loop vooruit.",
-    "Wat ik voel is belangrijk.",
-    "Mijn tempo is heilig.",
-    "Ik ben thuis in dit moment.",
-    "Ik kies vandaag voor rust in plaats van haast.",
-    "Ik hoef het niet te fixen, alleen aanwezig te zijn.",
-    "Ik ben een mens in ontwikkeling, en dat is prachtig.",
-    "Mijn gevoelens hebben bestaansrecht.",
-    "Ik omarm het onbekende met nieuwsgierigheid.",
-    "Ik mag nieuwe gewoonten creëren die mij voeden.",
-    "Ik ben veilig om te voelen, te rouwen, te helen."
-]
+affirmaties = get_affirmations("affirmations.txt")
 
 moods = {
     "😊 Blij": "blij",
@@ -73,81 +23,6 @@ moods = {
 }
 
 behoefte_opties = ["rust", "energie", "richting", "liefde", "steun", "warmte"]
-
-emotionele_thema_suggesties = {
-    "kwetsbaarheid": {
-        "woorden": ["kwetsbaar", "geraakt", "gevoelig", "open"],
-        "suggestie": "Doe een hartopenende houding zoals Anahata-asana."
-    },
-    "ontheemding": {
-        "woorden": ["ontheemd", "vreemd", "geen plek", "niet thuis"],
-        "suggestie": "Maak een klein altaartje met iets van je Amsterdamse thuis (Mara) en iets van hier."
-    },
-    "rusteloosheid": {
-        "woorden": ["rusteloos", "onrustig", "druk in hoofd"],
-        "suggestie": "Probeer yoga nidra, yin yoga of een bodyscan voor diepe ontspanning."
-    },
-    "vermoeidheid": {
-        "woorden": ["moe", "uitgeput", "leeg", "futloos"],
-        "suggestie": "Sluit je ogen en leg je handen op je onderbuik. Adem zacht in richting je handen, alsof je je eigen bron opnieuw vult. Blijf hier minstens 5 ademhalingen. Je hoeft niets te doen, alleen te zijn."
-    },
-    "eenzaamheid": {
-        "woorden": ["eenzaam", "alleen", "verlaten"],
-        "suggestie": "Breng je handen op je hart en herinner jezelf: je bent verbonden - met jezelf en met Mara."
-    },
-    "angst": {
-        "woorden": ["angstig", "bang", "bezorgd", "nerveus"],
-        "suggestie": "Adem in door je neus, uit met een zachte zucht. Herhaal 5x met gesloten ogen."
-    },
-    "overprikkeling": {
-        "woorden": ["overprikkeld", "vol hoofd", "te veel", "druk"],
-        "suggestie": "Sluit je ogen, masseer zacht je slapen met warme olie, en trek je even terug."
-    },
-    "verwarring": {
-        "woorden": ["verwarring", "verward", "geen richting"],
-        "suggestie": "Schrijf 5 minuten zonder stoppen – laat het stromen."
-    },
-    "boosheid": {
-        "woorden": ["boos", "woede", "frustratie", "irritatie"],
-        "suggestie": "Schrijf een brief die je niet hoeft te versturen – uit alles zonder filter."
-    },
-    "stilte": {
-        "woorden": ["stil", "stilte", "weinig", "geruisloos"],
-        "suggestie": "Omarm de stilte – neem 10 minuten zonder input en voel je eigen ritme."
-    },
-    "dankbaarheid": {
-        "woorden": ["dankbaar", "waardering", "voldoening"],
-        "suggestie": "Leg een steen of voorwerp op je altaar als symbool van dankbaarheid - of schrijf dit moment in een notitieboek ter herinnering."
-    },
-    "klein voelen": {
-        "woorden": ["klein", "weggedrukt", "onzichtbaar"],
-        "suggestie": "Rol jezelf op in Child’s Pose en adem alsof je gedragen wordt door de aarde."
-    },
-    "onzekerheid": {
-        "woorden": ["onzeker", "twijfel", "zelftwijfel", "niet goed genoeg"],
-        "suggestie": "Sta in Tadasana en voel je voeten stevig in de aarde."
-    }, 
-
-    "spijt": {
-        "woorden": ["spijt", "had ik maar", "ik wou dat", "te laat", "spijtig", "jammer", "helaas"],
-        "suggestie": "Schrijf een brief aan je vroegere zelf. Zeg alleen wat je nu weet, zonder oordeel. Je hoeft de brief niet te bewaren – laat het een vorm van loslaten zijn."
-    },
-
-    "keuzestress": {
-        "woorden": ["keuzestress", "niet kiezen", "twijfel", "vastlopen", "knoop doorhakken", "keuzes"],
-        "suggestie": "Leg je hand op je hart en stel jezelf de vraag: 'Als ik niets hoef te bewijzen, wat voelt dan licht?' Geef het antwoord tijd – je lichaam weet het vaak eerder dan je hoofd."
-    },
-
-    "geen richting": {
-        "woorden": ["geen richting", "verdwaald", "ik weet het niet", "zoekend", "geen idee"],
-        "suggestie": "Pak drie willekeurige voorwerpen en leg ze om je heen. Geef elk voorwerp een betekenis. Wat zegt dit mini-orakel vandaag tegen jou? Soms ontstaat richting door spel en toeval."
-    },
-
-    "schuldgevoel": {
-        "woorden": ["schuld", "schuldgevoel", "had ik anders moeten doen", "het is mijn fout", "schuldig"],
-        "suggestie": "Leg beide handen op je hart en fluister zacht: 'Ik mag leren. Ik mag mens zijn. Ik ben goed zoals ik ben.' Herhaal dit drie keer, langzaam. Laat je adem zachter worden. Schuld lost niet op door straf, maar door zachtheid."
-    }
-}
 
 def genereer_suggesties(tekst):
     gevonden = []
