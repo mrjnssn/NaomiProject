@@ -6,6 +6,8 @@ import os
 import calendar
 import math
 from utils import get_affirmations, emotionele_thema_suggesties
+import pylunar 
+import datetime
 
 
 BESTAND = "thuireis_journal.txt"
@@ -321,6 +323,11 @@ def bereken_maanfase_en_teken():
     graden_in_teken = int(positie_graden % 30)
 
     return fase_naam, f"{graden_in_teken}° {teken}"
+# phase name, coordinate in zodiac, sign
+
+#Location: 
+#mi = pylunar.MoonInfo()
+
 
 # GUI maanstand
 maanpagina = pages["MaanstandVandaag"]

@@ -80,3 +80,20 @@ emotionele_thema_suggesties = {
         "suggestie": "Leg beide handen op je hart en fluister zacht: 'Ik mag leren. Ik mag mens zijn. Ik ben goed zoals ik ben.' Herhaal dit drie keer, langzaam. Laat je adem zachter worden. Schuld lost niet op door straf, maar door zachtheid."
     }
 }
+
+
+
+def convert_days_to_dhm(days_float):
+    # Get the integer part as full days
+    days = int(days_float)
+
+    # Get the fractional part and convert to hours
+    fractional_day = days_float - days
+    total_hours = fractional_day * 24
+    hours = int(total_hours)
+
+    # Get the remaining fraction and convert to minutes
+    fractional_hour = total_hours - hours
+    minutes = int(fractional_hour * 60)
+
+    return days, hours, minutes
