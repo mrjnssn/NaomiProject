@@ -39,11 +39,11 @@ jobs:
       - name: Compress .app to zip
         run: |
           cd dist
-          zip -r MyApp-macos.zip MyApp.app
+          zip -r Thuisreis-macos.zip Thuisreis.app
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/MyApp-macos.zip
+          files: dist/Thuisreis-macos.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
