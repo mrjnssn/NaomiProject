@@ -33,7 +33,7 @@ jobs:
 
       - name: Build .app with PyInstaller
         run: |
-          pyinstaller --windowed --name "MyApp" main.py
+          pyinstaller --onefile --windowed --name "Thuisreis" --add-data "affirmations.txt:." --icon=Thuisreis.icns thuisreis_retro_gui.py
           ls -lh dist/
 
       - name: Compress .app to zip
